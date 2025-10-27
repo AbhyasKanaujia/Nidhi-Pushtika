@@ -1,0 +1,20 @@
+# Ignore JetBrains IDE files and project-specific files
+.idea/
+*.iml
+
+# Ignore node_modules directory if present
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore environment variable files
+.env
+
+# Ignore build output directories
+dist/
+build/
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
