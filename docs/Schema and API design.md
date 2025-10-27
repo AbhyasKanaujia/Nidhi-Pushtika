@@ -514,7 +514,7 @@ summary   -> only totals and header period info
 full      -> summary + full table of filtered transactions
 ```
 
-### AUTH API — Final Contract
+### AUTH API
 
 #### POST /auth/login
 
