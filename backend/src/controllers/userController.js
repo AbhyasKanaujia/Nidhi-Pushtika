@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const isValidObjectId = require('../utils/validateObjectId');
 
 // List all users (admin only)
 const listUsers = async (req, res) => {
@@ -78,6 +79,10 @@ const updateUser = async (req, res) => {
     }
     updateData.updatedAt = new Date();
 
+    if (!isValidObjectId(userId)) {
+      return res.status(400).json({"message": "Invalid user id"});
+    }
+
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-passwordHash');
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -94,6 +99,10 @@ const updateUser = async (req, res) => {
 const disableUser = async (req, res) => {
   try {
     const userId = req.params.id;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).json({message: 'Invalid user ID'});
+    }
 
     const disabledUser = await User.findByIdAndUpdate(userId, { isActive: false, updatedAt: new Date() }, { new: true });
     if (!disabledUser) {

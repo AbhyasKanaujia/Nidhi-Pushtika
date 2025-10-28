@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const requireRole = (role) => {
+const requireRole = (roles) => {
   return (req, res, next) => {
     try {
       const token = req.cookies.access_token;
@@ -9,8 +9,18 @@ const requireRole = (role) => {
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      if (decoded.role !== role) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient role' });
+      // Support both string and array of roles
+      if (typeof roles === 'string') {
+        if (decoded.role !== roles) {
+          return res.status(403).json({ message: 'Forbidden: Insufficient role' });
+        }
+      } else if (Array.isArray(roles)) {
+        if (!roles.includes(decoded.role)) {
+          return res.status(403).json({ message: 'Forbidden: Insufficient role' });
+        }
+      } else {
+        // Invalid roles parameter
+        return res.status(500).json({ message: 'Server error: Invalid roles parameter' });
       }
 
       req.user = decoded;

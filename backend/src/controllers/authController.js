@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const {isValidObjectId} = require("mongoose");
 
 const login = async (req, res) => {
   try {
@@ -59,6 +60,9 @@ const me = async (req, res) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if(!isValidObjectId(decoded.id)) {
+      return res.status(400).json({ message: 'Invalid user id' });
+    }
     const user = await User.findById(decoded.id).select('-passwordHash -__v');
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
