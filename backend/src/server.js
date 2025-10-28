@@ -26,6 +26,10 @@ app.use("/api/audit", auditRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/export", exportRoutes);
 
+// Global error handling middleware (must be last)
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
+
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
