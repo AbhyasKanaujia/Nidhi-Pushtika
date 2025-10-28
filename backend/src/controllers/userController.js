@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
-const isValidObjectId = require('../utils/validateObjectId');
+const {isValidObjectId} = require("mongoose")
 
 // List all users (admin only)
 const listUsers = async (req, res) => {

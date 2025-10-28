@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const createInitialAdminUser = require("./utils/initAdminUser");
 const userRoutes = require("./routes/userRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const auditRoutes = require("./routes/auditRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
+app.use("/api/audit", auditRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
