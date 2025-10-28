@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
 const auditRoutes = require("./routes/auditRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const exportRoutes = require("./routes/exportRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/export", exportRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
