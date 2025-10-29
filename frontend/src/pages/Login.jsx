@@ -33,8 +33,11 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
-      <Title level={2} className="text-center mb-6">
+    <div className="max-w-xs mx-auto mt-10 p-6 border rounded shadow bg-white sm:max-w-sm sm:mt-20 sm:p-8">
+      <Title level={1} className="text-center mb-4" style={{ fontWeight: 700 }}>
+        Nidhi Pushtika
+      </Title>
+      <Title level={2} className="text-center mb-6 text-xl sm:text-2xl" style={{ fontWeight: 600 }}>
         Login
       </Title>
       <Form
@@ -50,20 +53,32 @@ const Login = () => {
             { required: true, message: "Please input your email!" },
             { type: "email", message: "Please enter a valid email!" },
           ]}
+          className="mb-4"
         >
-          <Input placeholder="Email" autoComplete="username" id="login_email" />
+          <Input
+            placeholder="Email"
+            autoComplete="username"
+            id="login_email"
+            size="large"
+          />
         </Form.Item>
 
         <Form.Item
           label="Password"
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
+          className="mb-6"
         >
-          <Input.Password placeholder="Password" autoComplete="current-password" id="login_password" />
+          <Input.Password
+            placeholder="Password"
+            autoComplete="current-password"
+            id="login_password"
+            size="large"
+          />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block size="large" className="transition duration-200 ease-in-out hover:shadow-lg">
             Log In
           </Button>
         </Form.Item>
