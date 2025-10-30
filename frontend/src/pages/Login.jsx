@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Input, Button, message, Typography } from "antd";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -6,13 +6,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 const { Title } = Typography;
 
 const Login = () => {
-  const { login, user } = useAuth();
+  const { login, user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   // Get redirect param from query string or default to "/"
   const params = new URLSearchParams(location.search);
   const redirect = params.get("redirect") || "/";
+
+  const [messageApi, contextHolder] = message.useMessage();
 
   React.useEffect(() => {
     if (user) {
@@ -25,15 +27,22 @@ const Login = () => {
     const { email, password } = values;
     const result = await login(email, password);
     if (result.success) {
-      message.success("Login successful!");
+      messageApi.open({
+        type: "success",
+        content: "Login successful!",
+      });
       navigate(redirect, { replace: true });
     } else {
-      message.error(result.message || "Login failed");
+      messageApi.open({
+        type: "error",
+        content: result.message || "Login failed",
+      });
     }
   };
 
   return (
     <div className="max-w-xs mx-auto mt-10 p-6 border rounded shadow bg-white sm:max-w-sm sm:mt-20 sm:p-8">
+      {contextHolder}
       <Title level={1} className="text-center mb-4" style={{ fontWeight: 700 }}>
         Nidhi Pushtika
       </Title>
@@ -78,7 +87,14 @@ const Login = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block size="large" className="transition duration-200 ease-in-out hover:shadow-lg">
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            size="large"
+            loading={loading}
+            className="transition duration-200 ease-in-out hover:shadow-lg"
+          >
             Log In
           </Button>
         </Form.Item>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Typography, Button, Dropdown, Menu } from "antd";
+import { Typography, Button, Dropdown } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
@@ -11,7 +11,20 @@ const HeaderBar = () => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
+  const navLinks = [
+    { key: "transactions", to: "/transactions", label: "Transactions", roles: ["admin", "editor", "reader"] },
+    { key: "reports", to: "/reports", label: "Reports", roles: ["admin", "editor", "reader"] },
+    { key: "users", to: "/users", label: "Users", roles: ["admin"] },
+  ];
+
+  const menuItems = React.useMemo(() => navLinks
+    .filter((link) => user && link.roles.includes(user.role))
+    .map((link) => ({
+      key: link.key,
+      label: <Link to={link.to}>{link.label}</Link>,
+    })), [navLinks, user && user.role]);
+
+  React.useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 640px)"); // Tailwind's sm breakpoint
     setIsMobile(mediaQuery.matches);
 
@@ -25,30 +38,12 @@ const HeaderBar = () => {
     return null; // Do not render header if not logged in
   }
 
-  const navLinks = [
-    { key: "transactions", to: "/transactions", label: "Transactions", roles: ["admin", "editor", "reader"] },
-    { key: "reports", to: "/reports", label: "Reports", roles: ["admin", "editor", "reader"] },
-    { key: "users", to: "/users", label: "Users", roles: ["admin"] },
-  ];
-
-  const menu = (
-    <Menu>
-      {navLinks
-        .filter((link) => link.roles.includes(user.role))
-        .map((link) => (
-          <Menu.Item key={link.key}>
-            <Link to={link.to}>{link.label}</Link>
-          </Menu.Item>
-        ))}
-    </Menu>
-  );
-
   return (
     <header className="bg-gray-100 shadow px-6 py-3">
       <nav className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {isMobile && (
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown menu={{ items: menuItems }} trigger={['click']}>
               <Button
                 icon={<MenuOutlined />}
                 type="text"
