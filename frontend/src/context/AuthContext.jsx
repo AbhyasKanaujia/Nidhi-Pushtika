@@ -1,4 +1,6 @@
+
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { login as loginApi, logout as logoutApi, getCurrentUser } from "../api/authApi";
 
 const AuthContext = createContext(null);
 
@@ -10,15 +12,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("/api/auth/me", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-        } else {
-          setUser(null);
-        }
+        const data = await getCurrentUser();
+        setUser(data);
       } catch (error) {
         setUser(null);
       } finally {
@@ -30,30 +25,22 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
+    try {
+      const data = await loginApi(email, password);
       setUser(data.user);
       return { success: true };
-    } else {
-      const errorData = await response.json();
-      return { success: false, message: errorData.message };
+    } catch (error) {
+      return { success: false, message: error.message };
     }
   };
 
+
   const logout = async () => {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    try {
+      await logoutApi();
+    } catch (error) {
+      // Optionally handle logout error
+    }
     setUser(null);
   };
 

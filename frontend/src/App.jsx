@@ -16,9 +16,11 @@ function App() {
         <div className="flex flex-col min-h-screen">
           <HeaderBar />
           <main className="flex-grow">
+
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Transactions />} />
                 <Route path="/transactions" element={<Transactions />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/users" element={<Users />} />
