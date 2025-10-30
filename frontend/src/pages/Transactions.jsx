@@ -4,11 +4,13 @@ import useTransactions from "../hooks/useTransactions";
 import TransactionList from "../components/TransactionList";
 import TransactionTable from "../components/TransactionTable.jsx";
 import { Typography } from "antd";
+import SummaryStrip from "../components/SummaryStrip";
+import ErrorPlaceholder from "../components/ErrorPlaceholder.jsx";
 
 const { Title } = Typography;
 
 export default function Transactions() {
-  const { transactions, loading, error } = useTransactions();
+  const { transactions, loading, error, filters, setFilters } = useTransactions();
 
   if (loading) {
     return (
@@ -20,9 +22,10 @@ export default function Transactions() {
 
   if (error) {
     return (
-      <div className="p-4 text-center text-red-600">
-        Error loading transactions: {error.message || "Unknown error"}
-      </div>
+      <ErrorPlaceholder
+        message="Failed to load transactions."
+        subMessage={error.message || "Unknown error"}
+      />
     );
   }
 
@@ -31,8 +34,10 @@ export default function Transactions() {
       <div className="mt-4">
         <Title level={2}>Transactions</Title>
       </div>
-      <TransactionList transactions={transactions}/>
-      <TransactionTable transactions={transactions}/>
+      {/* Summary strip showing totals based on current filters */}
+      <SummaryStrip filters={filters} />
+      <TransactionList transactions={transactions} setFilters={setFilters} />
+      <TransactionTable transactions={transactions} />
 
     </div>
   );

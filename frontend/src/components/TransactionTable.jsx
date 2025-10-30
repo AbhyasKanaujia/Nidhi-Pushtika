@@ -1,8 +1,12 @@
 import React from "react";
-import { formatCurrency } from "../utils/formatCurrency";
+import {formatCurrency} from "../utils/formatCurrency";
+import {Typography} from "antd";
+
+const {Title} = Typography;
 
 export default function TransactionTable({transactions}) {
   return (<div className="mx-auto mt-4 overflow-x-scroll">
+    <Title level={3}>Transaction Table</Title>
       <table className="min-w-full border border-gray-300">
         <thead className="bg-gray-100">
         <tr>

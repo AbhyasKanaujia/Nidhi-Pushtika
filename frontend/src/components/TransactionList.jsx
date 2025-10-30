@@ -1,5 +1,8 @@
 import React from "react";
-import { formatCurrency } from "../utils/formatCurrency";
+import {formatCurrency} from "../utils/formatCurrency";
+import {Typography} from "antd";
+
+const {Title} = Typography;
 
 function formatDate(dateStr) {
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -16,7 +19,8 @@ export default function TransactionList({ transactions }) {
   }, {});
 
   return (
-    <div className="md:w-md mx-auto bg-white">
+    <div className="md:w-md mt-4 mx-auto bg-white">
+      <Title level={3}>Transaction List</Title>
       {Object.entries(grouped).map(([date, txns]) => (
         <div key={date}>
           <h2 className="sticky top-0 bg-white text-lg font-semibold mb-2 border-b border-gray-300 py-1">
@@ -45,6 +49,7 @@ export default function TransactionList({ transactions }) {
           </div>
         </div>
       ))}
+      <p className="text-center text-gray-500 text-xs mb-4 border-b border-gray-400 border-dotted py-2">End of Transactions</p>
     </div>
   );
 }
