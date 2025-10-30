@@ -1084,3 +1084,57 @@ Based on these considerations, a suggested order of implementation for the front
 This order ensures foundational elements and core user flows are built first, enabling incremental development and testing of more advanced features.
 
 If you want, I can now create a detailed task breakdown checklist for this frontend implementation order.
+
+### Transaction Table UI Design
+
+- __Date as Section Headers with Grouped Cards__
+
+    - Group transactions by date with a sticky or floating date header.
+    - Each date section contains cards for transactions on that day.
+    - This reduces repetition of the date and creates a natural timeline feel.
+
+- __Timeline or Vertical Stepper View__
+
+    - Visualize transactions as points on a vertical timeline.
+    - Date is implicit in the timeline position or shown as a label.
+    - Each transaction card can expand or collapse for details.
+    - This gives a sense of flow and history, making it engaging.
+
+- __Conversation/Chat Style UI__
+
+    - Present transactions like chat bubbles.
+    - Income transactions aligned to the right in green, expenses to the left in red.
+    - Date separators appear as timestamps between groups.
+    - This is very mobile-friendly and intuitive.
+
+- __Interactive Summary Cards with Drill-Down__
+
+    - Show summarized cards for each day or category with totals.
+    - Tap a summary card to expand and show individual transactions.
+    - Keeps the UI clean and focused on insights.
+
+- __Swipeable Cards with Quick Actions__
+
+    - Each transaction card supports swipe gestures for edit, delete, or favorite.
+    - Provides quick access to common actions without clutter.
+
+- __Use of Icons and Visual Cues__
+
+    - Use culturally relevant icons or symbols for transaction types.
+    - Color coding and subtle animations to guide attention.
+
+- __Progressive Disclosure__
+
+    - Show minimal info upfront (note and amount).
+    - Tap or long press to reveal date, category, and other details.
+    - Keeps the interface uncluttered.
+
+- __Smart Sorting and Filtering UI__
+
+    - Allow users to easily switch views: by date, by category, by amount.
+    - Use segmented controls or tabs for quick toggling.
+
+- __Personalized Insights Panel__
+
+    - Alongside the list, show personalized insights like spending trends, alerts, or tips.
+    - Makes the experience more engaging and valuable.
