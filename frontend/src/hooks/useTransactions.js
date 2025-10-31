@@ -13,6 +13,7 @@ export function useTransactions(params) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     getTransactions(params)
       .then((response) => {
         setTransactions(response.data);

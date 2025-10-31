@@ -1,16 +1,36 @@
-import React from "react";
-import { WarningOutlined } from "@ant-design/icons";
 
-const ErrorPlaceholder = ({ message = "Data is currently unavailable.", subMessage = "Please try again later." }) => {
+
+import React from "react";
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { TypographyH2, TypographyMuted } from "@/components/ui/typography";
+
+const ErrorPlaceholder = ({
+  icon: Icon = AlertTriangle,
+  message,
+  subMessage,
+  actionLabel,
+  onAction,
+  className,
+}) => {
   return (
-    <div className="text-center p-6 flex flex-col items-center gap-2">
-      <WarningOutlined className="text-4xl text-gray-400 mb-1" />
-      <div className="text-base font-normal text-gray-700">
-        {message}
-      </div>
-      <div className="text-sm text-gray-500">
-        {subMessage}
-      </div>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center text-center p-6 rounded-md border border-dashed",
+        className
+      )}
+    >
+      <Icon className="h-10 w-10 text-destructive mb-3" />
+      <TypographyH2 className="mb-1">{message}</TypographyH2>
+      {subMessage && (
+        <TypographyMuted className="mb-4">{subMessage}</TypographyMuted>
+      )}
+      {actionLabel && onAction && (
+        <Button variant="outline" onClick={onAction}>
+          {actionLabel}
+        </Button>
+      )}
     </div>
   );
 };

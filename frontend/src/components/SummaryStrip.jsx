@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Spin, Typography } from "antd";
+import { Card, CardContent } from "@/components/ui/card";
+import {TypographyH1, TypographyH2, TypographyH3, TypographyMuted} from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "../utils/formatCurrency";
 import { getSummary } from "../api/reportApi";
-
-const { Text, Title } = Typography;
-
-
-import { WarningOutlined } from "@ant-design/icons";
 import ErrorPlaceholder from "./ErrorPlaceholder";
+import { Loader2 } from "lucide-react";
+import {Loader} from "@/components/ui/loader.jsx";
 
 const SummaryStrip = ({ filters }) => {
   const [summary, setSummary] = useState({
@@ -39,46 +38,34 @@ const SummaryStrip = ({ filters }) => {
   useEffect(() => {
     fetchSummary();
   }, [filters?.from, filters?.to]);
-
   return (
-    <div className="md:w-md mx-auto">
-      <Title level={3}>Summary</Title>
+    <div className="mx-auto mt-4">
       <Card className="mb-4">
-        {loading ? (
-          <div className="text-center py-5">
-            <Spin />
-          </div>
-        ) : error ? (
-          <ErrorPlaceholder
-            message="Summary data is currently unavailable."
-            subMessage="Please try again later."
-          />
-        ) : (
-          <div className="flex flex-col md:flex-row justify-between items-center text-center">
-            <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-200 py-2 transition-transform duration-200 ease-in-out hover:scale-[1.03] cursor-pointer">
-              <Title level={5}>Total Income</Title>
-              <Text type="success" strong style={{ fontSize: "1.125rem" }}>
-                {formatCurrency(summary.totalIncome)}
-              </Text>
-            </div>
-            <div className="flex-1 border-b md:border-b-0 md:border-r border-gray-200 py-2 transition-transform duration-200 ease-in-out hover:scale-[1.03] cursor-pointer">
-              <Title level={5}>Total Expense</Title>
-              <Text type="danger" strong style={{ fontSize: "1.125rem" }}>
-                {formatCurrency(summary.totalExpense)}
-              </Text>
-            </div>
-            <div className="flex-1 py-2 transition-transform duration-200 ease-in-out hover:scale-[1.03] cursor-pointer">
-              <Title level={5}>Balance</Title>
-              <Text
-                type={summary.balance >= 0 ? "success" : "danger"}
-                strong
-                style={{ fontSize: "1.125rem" }}
-              >
-                {formatCurrency(summary.balance)}
-              </Text>
-            </div>
-          </div>
-        )}
+        <CardContent className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-border p-0">
+          {loading ? (
+            <Loader message="Calculating..."/>
+          ) : error ? (
+            <ErrorPlaceholder
+              message="Summary data is currently unavailable."
+              subMessage="Please try again later."
+            />
+          ) : (
+            <>
+              <div className="flex-1 p-6 text-center transition-transform duration-200 ease-in-out hover:scale-[1.03]">
+                <TypographyMuted className="mb-1">Total Income</TypographyMuted>
+                <TypographyH1 className="text-green-600">{formatCurrency(summary.totalIncome)}</TypographyH1>
+              </div>
+              <div className="flex-1 p-6 text-center transition-transform duration-200 ease-in-out hover:scale-[1.03]">
+                <TypographyMuted className="mb-1">Total Expense</TypographyMuted>
+                <TypographyH1 className="text-red-600">{formatCurrency(summary.totalExpense)}</TypographyH1>
+              </div>
+              <div className="flex-1 p-6 text-center transition-transform duration-200 ease-in-out hover:scale-[1.03]">
+                <TypographyMuted className="mb-1">Balance</TypographyMuted>
+                <TypographyH1 className={cn(summary.balance >= 0 ? "text-green-600" : "text-red-600")}>{formatCurrency(summary.balance)}</TypographyH1>
+              </div>
+            </>
+          )}
+        </CardContent>
       </Card>
     </div>
   );

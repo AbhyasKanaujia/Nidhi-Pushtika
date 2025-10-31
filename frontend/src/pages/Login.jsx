@@ -1,114 +1,115 @@
-import React, { useState } from "react";
-import {Form, Input, Button, message, Typography, Spin} from "antd";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, {useEffect, useState} from "react"
+import {useForm} from "react-hook-form"
+import {z} from "zod"
+import {zodResolver} from "@hookform/resolvers/zod"
+import {useAuth} from "../context/AuthContext"
+import {useLocation, useNavigate} from "react-router-dom"
+import {Button} from "../components/ui/button"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "../components/ui/form"
+import {Input} from "../components/ui/input"
+import {Alert, AlertDescription, AlertTitle} from "../components/ui/alert"
+import {AlertCircle} from "lucide-react"
+import {TypographyH1, TypographyMuted} from "@/components/ui/typography";
+import {Loader} from "@/components/ui/loader.jsx"
 
-const { Title } = Typography;
+
+const formSchema = z.object({
+  email: z.email("Enter a valid email"), password: z.string().min(6, "Password must be at least 6 characters"),
+})
 
 const Login = () => {
-  const { login, user, loading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const {login, user} = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   // Get redirect param from query string or default to "/"
-  const params = new URLSearchParams(location.search);
-  const redirect = params.get("redirect") || "/";
+  const params = new URLSearchParams(location.search)
+  const redirect = params.get("redirect") || "/"
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const form = useForm({
+    resolver: zodResolver(formSchema), defaultValues: {
+      email: "", password: "",
+    },
+  })
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
-      // If already authenticated, redirect immediately
-      navigate(redirect, { replace: true });
+      navigate(redirect, {replace: true})
     }
-  }, [user, navigate, redirect]);
+  }, [user, navigate, redirect])
 
-  const onFinish = async (values) => {
-    const { email, password } = values;
-    const result = await login(email, password);
-    if (result.success) {
-      messageApi.open({
-        type: "success",
-        content: "Login successful!",
-      });
-      navigate(redirect, { replace: true });
-    } else {
-      messageApi.open({
-        type: "error",
-        content: result.message || "Login failed",
-      });
+  const onSubmit = async (values) => {
+    setError(null)
+    setLoading(true)
+
+    try {
+      const result = await login(values.email, values.password)
+      if (!result.success) {
+        throw new Error(result.message || "Login failed")
+      }
+      navigate(redirect, {replace: true})
+    } catch (err) {
+      setError(err.message || "Something went wrong")
+    } finally {
+      setLoading(false)
     }
-  };
-
-  if (loading) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-        <Spin size="large" />
-      </div>
-    );
   }
 
-  return (
-    <div className="max-w-xs mx-auto mt-10 p-6 border rounded shadow bg-white sm:max-w-sm sm:mt-20 sm:p-8">
-      {contextHolder}
-      <Title level={1} className="text-center mb-4" style={{ fontWeight: 700 }}>
-        Nidhi Pushtika
-      </Title>
-      <Title level={2} className="text-center mb-6 text-xl sm:text-2xl" style={{ fontWeight: 600 }}>
-        Login
-      </Title>
-      <Form
-        name="login"
-        onFinish={onFinish}
-        layout="vertical"
-        initialValues={{ email: "", password: "" }}
-      >
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Please input your email!" },
-            { type: "email", message: "Please enter a valid email!" },
-          ]}
-          className="mb-4"
-        >
-          <Input
-            placeholder="Email"
-            autoComplete="username"
-            id="login_email"
-            size="large"
-          />
-        </Form.Item>
+  return (<div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
+      <div className="w-full max-w-sm border rounded-lg p-6 shadow-sm">
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-          className="mb-6"
-        >
-          <Input.Password
-            placeholder="Password"
-            autoComplete="current-password"
-            id="login_password"
-            size="large"
-          />
-        </Form.Item>
 
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            size="large"
-            loading={loading}
-            className="transition duration-200 ease-in-out hover:shadow-lg"
-          >
-            Log In
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-};
+        <TypographyH1 className="text-center mb-1">Nidhi Pushtika</TypographyH1>
+        <TypographyMuted className="text-center mb-6">
+          Login to your account
+        </TypographyMuted>
 
-export default Login;
+        {error && (<Alert variant="destructive" className="mb-4 flex items-center gap-2">
+            <AlertCircle className="h-4 w-4"/>
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>)}
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({field}) => (<FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your email" autoComplete="email" {...field} />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>)}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({field}) => (<FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Enter your password"
+                           autoComplete="current-password" {...field} />
+                  </FormControl>
+                  <FormMessage/>
+                </FormItem>)}
+            />
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (<>
+                  <Loader className="mr-2 h-4 w-4"/>
+                  Logging in...
+                </>) : ("Login")}
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>)
+}
+
+export default Login
